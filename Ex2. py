@@ -1,0 +1,70 @@
+inp = "((e+a)+b)"
+
+_="-"
+
+start = 1
+end = 1   
+cur = 1 
+table = [["state","epsilon","a","b"],
+          [1,_,_,_]]
+
+def print_t(table):
+    i = table[0]
+    print(f'{i[0]: <10}'+f'| {i[1]: <10}'+f'| {i[2]: <10}'+f'| {i[3]: <10}')
+    print("-"*46)
+    for i in table[1:]:
+        try:
+            x = " ".join([str(j) for j in i[1]])
+        except:
+            x = ""
+        try:
+            y = " ".join([str(j) for j in i[2]])
+        except:
+            y = ""
+        try:
+            z = " ".join([str(j) for j in i[3]])
+        except:
+            z = ""
+        print(f'{i[0]: <10}'+f'| {x: <10}'+f'| {y: <10}'+f'| {z: <10}')
+
+def e_(cur,ed=end):
+    temp = table[cur]
+    try:
+        table[cur] = [cur,temp[1].append(cur+1),temp[2],temp[3]]
+    except:
+        table[cur] = [cur,[cur+1],temp[2],temp[3]]
+    table.append([ed+1,_,_,_])
+    ed+=1
+    return ed
+
+def or_a(cur,ed=end):
+    temp = table[cur]
+    try:
+        table[cur] = [cur,temp[1],temp[2].append(cur+1),temp[3]]
+    except:
+        table[cur] = [cur,temp[1],[cur+1],temp[3]]
+        
+def or_b(cur,ed=end):
+    temp = table[cur]
+    try:
+        table[cur] = [cur,temp[1],temp[2],temp[3].append(cur+1)]
+    except:
+        table[cur] = [cur,temp[1],temp[2],[cur+1]]
+
+
+def mod_table(inp,start,cur,end,table):
+    k = 0
+    while k<len(inp):
+        if inp[k]=="e":
+            end = e_(cur,end)
+        elif inp[k]=="+":
+            k+=1                       
+            if inp[k]=="a":
+                or_a(cur,end)
+            elif inp[k]=="b":
+                or_b(cur,end)
+        k+=1
+    return start,cur,end,table
+
+start,cur,end,table = mod_table(inp,start,cur,end,table)
+print_t(table)
